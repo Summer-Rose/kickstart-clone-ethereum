@@ -11,7 +11,10 @@ contract Campaign {
   Request[] public requests;
   address public manager;
   uint public minimumContribution;
-  address[] public approvers;
+  //array search - linear time
+  //mapping search - 'constant' time
+  //mappings are NOT iterable
+  mapping(address => bool) public approvers;
 
   modifier restricted() {
     require(msg.sender == manager);
@@ -25,13 +28,13 @@ contract Campaign {
 
   function contribute() public payable {
     require(msg.value > minimumContribution);
-    approvers.push(msg.sender);
+    approvers[msg.sender] = true;
   }
 
   function createRequest(string description, uint value, address recipient)
     public restricted {
     //storage keyword - data stored in storage
-    //memory keyworrd - data stored in memory, memory gets dumped everytime function exits
+    //memory keyword - data stored in memory, memory gets dumped everytime function exits
     Request memory newRequest = Request({
       description: description,
       value: value,
