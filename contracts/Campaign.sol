@@ -6,6 +6,8 @@ contract Campaign {
     uint value;
     address recipient;
     bool complete;
+    uint approvalCount;
+    mapping(address => bool) approvals;
   }
 
   Request[] public requests;
@@ -39,11 +41,23 @@ contract Campaign {
       description: description,
       value: value,
       recipient: recipient,
-      complete: false
+      complete: false,
+      approvalCount: 0
+      //mapping is a 'reference' type - we don't need to initialize reference types
+      //string, uint, etc. are value types and must be initialized
     });
 
     //alternative struct instantiation -- not recommended:
     //Request(description, value, recipient, false);
     requests.push(newRequest);
+  }
+
+  function approveRequest(uint index) public {
+    require(approvers[msg.sender]);
+    Request storage request = requests[index];
+    require(!request.approvals[msg.sender]);
+
+    request.approvals[msg.sender] = true;
+    request.approvalCount++;
   }
 }
