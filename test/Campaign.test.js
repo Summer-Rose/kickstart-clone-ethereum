@@ -31,4 +31,65 @@ describe('Campaigns', () => {
     assert.ok(factory.options.address);
     assert.ok(campaign.options.address);
   });
+
+  it('marks caller as the campaign manager', async() => {
+    const manager = await campaign.methods.manager().call();
+    assert.equal(accounts[0], manager);
+  });
+
+  it('allows people to contribute money and marks them as approvers', async() => {
+    await campaign.methods.contribute().send( {
+      value: '200',
+      from: accounts[1]
+    });
+    const isContributer = await campaign.methods.approvers(accounts[1]).call();
+    assert(isContributer);
+  });
+
+  it('requires a minimum contribution', async() => {
+    try {
+      await campaign.methods.contribute().send({
+        value: '5',
+        from: accounts[1]
+      });
+      assert(false);
+    } catch (err) {
+      assert(err);
+    }
+  });
+
+  it('allows a manager to make a payment request', async () => {
+    await campaign.methods
+      .createRequest('Buy batteries', '100', accounts[1])
+      .send({
+        from: accounts[0],
+        gas: '1000000'
+      });
+    const request = await campaign.methods.requests(0).call();
+    assert.equal('Buy batteries', request.description);
+  });
+
+  it('processes requests', async() => {
+    const balanceBefore = parseFloat(web3.utils.fromWei(await web3.eth.getBalance(accounts[1]), 'ether'));
+    await campaign.methods.contribute().send({
+      from: accounts[0],
+      value: web3.utils.toWei('10', 'ether')
+    });
+    await campaign.methods
+      .createRequest('Buy batteries', web3.utils.toWei('5', 'ether'), accounts[1])
+      .send({
+        from: accounts[0],
+        gas: '1000000'
+      });
+    await campaign.methods.approveRequest(0).send({
+      from: accounts[0],
+      gas: '1000000'
+    });
+    await campaign.methods.finalizeRequest(0).send({
+      from: accounts[0],
+      gas: '1000000'
+    });
+    const balanceAfter = parseFloat(web3.utils.fromWei(await web3.eth.getBalance(accounts[1]), 'ether'));
+    assert(balanceAfter > balanceBefore);
+  });
 });
