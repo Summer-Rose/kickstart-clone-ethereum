@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import factory from '../ethereum/factory';
+import { Card, Button } from 'semantic-ui-react';
+import Layout from '../components/Layout';
 
 class CampaignIndex extends Component {
   //NextJs exclusive method -- called when loading code on Next server
@@ -10,8 +12,33 @@ class CampaignIndex extends Component {
     return { campaigns };
   }
 
+  renderCampaigns() {
+    const items = this.props.campaigns.map(address => {
+      return {
+        header: address,
+        description: <a>View Campaign</a>,
+        fluid: true
+      };
+    });
+    return <Card.Group items={items} />;
+  }
+
   render() {
-    return <div>{this.props.campaigns[0]}</div>
+    return (
+      <Layout>
+        <div>
+          <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"></link>
+          <h3>Open Campaigns</h3>
+          <Button
+            floated="right"
+            content="Create Campaign"
+            icon="add"
+            primary
+          />
+          {this.renderCampaigns()}
+        </div>
+      </Layout>
+    );
   }
 }
 
