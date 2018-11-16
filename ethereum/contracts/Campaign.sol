@@ -1,10 +1,10 @@
-pragma solidity ^0.4.17;
+pragma solidity >=0.4.22 <0.6.0;
 
 contract CampaignFactory {
   address[] public deployedCampaigns;
 
-  function createCampaign(uint minimum) {
-    address newCampaign = new Campaign(minimum, msg.sender);
+  function createCampaign(string title, string description, uint goal, uint minimum) public {
+    address newCampaign = new Campaign(title, description, goal, minimum, msg.sender);
     deployedCampaigns.push(newCampaign);
   }
 
@@ -15,7 +15,8 @@ contract CampaignFactory {
 
 contract Campaign {
   struct Request {
-    string description;
+    string briefDescription;
+    string detailedDescription;
     uint value;
     address recipient;
     bool complete;
@@ -25,7 +26,11 @@ contract Campaign {
 
   Request[] public requests;
   address public manager;
+  string public title;
+  string public description;
+  uint public goal;
   uint public minimumContribution;
+  uint public totalRequestsAmount;
   //array search - linear time
   //mapping search - 'constant' time
   //mappings are NOT iterable
@@ -33,27 +38,39 @@ contract Campaign {
   uint public approversCount;
 
   modifier restricted() {
-    require(msg.sender == manager);
+    require(msg.sender == manager, "You must be the project manager to perform this action.");
     _;
   }
 
-  function Campaign(uint minimum, address creator) public {
+  constructor(string enteredTitle, string enteredDescription,
+    uint enteredGoal, uint minimum, address creator) public {
     manager = creator;
     minimumContribution = minimum;
+    title = enteredTitle;
+    description = enteredDescription;
+    goal = enteredGoal;
+    totalRequestsAmount = 0;
   }
 
   function contribute() public payable {
-    require(msg.value > minimumContribution);
-    approvers[msg.sender] = true;
-    approversCount++;
+    require(msg.value > 0, "You must send more than 0 Ether to contribute!");
+    if (msg.value >= minimumContribution && !approvers[msg.sender]) {
+      approvers[msg.sender] = true;
+      approversCount++;
+    }
   }
 
-  function createRequest(string description, uint value, address recipient)
+  function createRequest(string briefDescription, string detailedDescription, uint value, address recipient)
     public restricted {
+      require(address(this).balance > 0, "Not enough funds");
+      require(totalRequestsAmount + value <= address(this).balance, "Not enough funds");
+      require(recipient != manager, "You cannot be the recipient");
+      totalRequestsAmount += value;
     //storage keyword - data stored in storage
     //memory keyword - data stored in memory, memory gets dumped everytime function exits
     Request memory newRequest = Request({
-      description: description,
+      briefDescription: briefDescription,
+      detailedDescription: detailedDescription,
       value: value,
       recipient: recipient,
       complete: false,
@@ -68,9 +85,9 @@ contract Campaign {
   }
 
   function approveRequest(uint index) public {
-    require(approvers[msg.sender]);
+    require(approvers[msg.sender], "You are not elligible to approve");
     Request storage request = requests[index];
-    require(!request.approvals[msg.sender]);
+    require(!request.approvals[msg.sender], "You have already approved this request.");
 
     request.approvals[msg.sender] = true;
     request.approvalCount++;
@@ -78,21 +95,26 @@ contract Campaign {
 
   function finalizeRequest(uint index) public restricted {
     Request storage request = requests[index];
-    require(!request.complete);
-    require(request.approvalCount > (approversCount / 2));
+    require(!request.complete, "This request is already completed.");
+    require(request.approvalCount > (approversCount / 2), "Not enough people have approved this request yet.");
     request.recipient.transfer(request.value);
     request.complete = true;
+    totalRequestsAmount -= request.value;
   }
 
   function getSummary() public view returns (
-    uint, uint, uint, uint, address
+    string, string, uint, uint, uint, uint, uint, address, uint
   ) {
     return  (
+      title,
+      description,
+      goal,
       minimumContribution,
-      this.balance,
+      address(this).balance,
       requests.length,
       approversCount,
-      manager
+      manager,
+      totalRequestsAmount
     );
   }
 
