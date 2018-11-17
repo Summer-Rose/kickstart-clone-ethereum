@@ -7,6 +7,9 @@ import { Router } from '../../routes';
 
 class CampaignNew extends Component {
   state = {
+    title: '',
+    description: '',
+    goal: '',
     minimumContribution: '',
     errorMessage: '',
     loading: false
@@ -18,7 +21,8 @@ class CampaignNew extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       await factory.methods
-      .createCampaign(this.state.minimumContribution)
+      .createCampaign(this.state.title, this.state.description,
+        this.state.goal, this.state.minimumContribution)
       .send({
         from: accounts[0]
       });
@@ -35,12 +39,40 @@ class CampaignNew extends Component {
         <h3>Create a campaign</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
-            <label>Minimum Contribution</label>
+            <label>What is your project called?</label>
+            <Input
+              value={this.state.title}
+              placeholder='Project title'
+              onChange={event =>
+                this.setState({title: event.target.value })} />
+          </Form.Field>
+          <Form.Field>
+            <label>Describe your project</label>
+            <Input
+              value={this.state.description}
+              placeholder='Project description'
+              onChange={event =>
+                this.setState({description: event.target.value })} />
+          </Form.Field>
+          <Form.Field>
+            <label>How much Ether are you hoping to raise for your project?</label>
+            <Input
+              value={this.state.goal}
+              placeholder='Goal'
+              onChange={event =>
+                this.setState({goal: event.target.value })}
+              label="Ether"
+              labelPosition="right"
+              type="number"/>
+          </Form.Field>
+          <Form.Field>
+            <label>What's the least amount of money someone can contribute to become one of your Approvers?</label>
             <Input
               value={this.state.minimumContribution}
+              placeholder='Minimum contribution to gain approver status'
               onChange={event =>
                 this.setState({minimumContribution: event.target.value })}
-              label="wei"
+              label="Wei"
               labelPosition="right"
               type="number"/>
           </Form.Field>

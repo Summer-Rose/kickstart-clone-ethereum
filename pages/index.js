@@ -10,13 +10,14 @@ class CampaignIndex extends Component {
   //static (req. by NextJs) allows Next to run the method without having to render the component
   static async getInitialProps() {
     const campaigns = await factory.methods.getDeployedCampaigns().call();
+    console.log(campaigns);
     return { campaigns };
   }
 
   renderCampaigns() {
-    const items = this.props.campaigns.map(address => {
+    const items = this.props.campaigns.map((address, title) => {
       return {
-        header: address,
+        header: title,
         description: (
           <Link route={`/campaigns/${address}`}>
             <a>View Campaign</a>

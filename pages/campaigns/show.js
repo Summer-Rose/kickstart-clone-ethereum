@@ -12,25 +12,39 @@ class CampaignShow extends Component {
     const campaign = Campaign(props.query.address);
     const summary = await campaign.methods.getSummary().call();
     return {
-      minimumContribution: summary[0],
-      balance: summary[1],
-      requestsCount: summary[2],
-      approversCount:summary[3],
-      manager: summary[4],
+      title: summary[0],
+      description: summary[1],
+      goal: summary[2],
+      minimumContribution: summary[3],
+      balance: summary[4],
+      requestsCount: summary[5],
+      approversCount:summary[6],
+      manager: summary[7],
+      totalRequestsAmount: [8],
       address: props.query.address
     };
   }
 
   renderCards() {
     const {
+      title,
+      description,
+      goal,
       balance,
       manager,
       minimumContribution,
       requestsCount,
-      approversCount
+      approversCount,
+      totalRequestsAmount
     } = this.props;
 
     const items = [
+      {
+        header: goal,
+        meta: 'Fundraising goal',
+        description: 'This is the amount the manager hopes to raise for their project',
+        style: { overflowWrap: 'break-word' }
+      },
       {
         header: manager,
         meta: 'Address of Manager',
