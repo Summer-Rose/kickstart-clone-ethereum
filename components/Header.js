@@ -1,24 +1,40 @@
 import React from  'react';
-import { Menu, Image } from 'semantic-ui-react';
+import { Menu, Image, Header, Icon } from 'semantic-ui-react';
 import { Link } from '../routes';
-import logo from './jetpack.png';
 
 export default () => {
   return  (
     <Menu style={{ marginTop: '15px' }}>
       <Menu.Item>
-        <Image src={logo} />
+        <Link route="/">
+        <a>
+          <Image
+            size="tiny"
+            src="https://image.ibb.co/ib5rs0/jetpack.png" />
+        </a>
+        </Link>
       </Menu.Item>
       <Link route="/">
-        <a className="item">JetPack</a>
+        <a className="item">
+          <Header
+            as='h1'>JetPack</Header>
+        </a>
       </Link>
       <Menu.Menu position="right">
-      <Link route="/">
-        <a className="item">Campaigns</a>
-      </Link>
-      <Link route="/campaigns/new">
-        <a className="item">+</a>
-      </Link>
+      <Menu.Item>
+        <Link route="/">
+          <a>
+            <Header as='h3'>Projects</Header>
+          </a>
+        </Link>
+      </Menu.Item>
+      <Menu.Item>
+        <Link route="/campaigns/new">
+          <a style={{marginLeft: 15, marginRight: 10}}>
+            <Icon name='plus' size="large" circular/>
+          </a>
+        </Link>
+      </Menu.Item>
       </Menu.Menu>
     </Menu>
   );
