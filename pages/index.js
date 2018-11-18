@@ -4,6 +4,7 @@ import { Card, Button, Icon, Header, Progress, Container } from 'semantic-ui-rea
 import Layout from '../components/Layout';
 import { Link } from '../routes';
 import Campaign from '../ethereum/campaign';
+import web3 from '../ethereum/web3';
 
 class CampaignIndex extends Component {
   //NextJs exclusive method -- called when loading code on Next server
@@ -23,6 +24,7 @@ class CampaignIndex extends Component {
   renderCampaigns() {
     const items = this.props.summaries.map((summary, index) => {
       const address = this.props.campaigns[index];
+      const percent = Math.floor(((summary[4] / web3.utils.toWei(summary[2], 'ether')) * 100));
       return {
         header: (
          <Link route={`/campaigns/${address}`}>
@@ -32,7 +34,7 @@ class CampaignIndex extends Component {
         description: (
           <Container>
             <div>
-            <Progress style={{marginTop: 10}} value={summary[4]} total={summary[2]} progress='percent' color="teal" />
+            <Progress style={{marginTop: 10}} percent={percent} progress color="teal" />
             <p style={{marginTop: -25}}>{summary[1]}</p>
             </div>
           </Container>
