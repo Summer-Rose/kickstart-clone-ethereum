@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Layout from '../../components/Layout';
 import Campaign from '../../ethereum/campaign';
-import { Card, Grid, Button, Segment, Header, Container, Progress } from 'semantic-ui-react';
+import { Card, Grid, Button, Segment, Header, Container, Icon, Progress } from 'semantic-ui-react';
 import web3 from '../../ethereum/web3';
 import ContributeForm from '../../components/ContributeForm';
 import { Link } from '../../routes';
@@ -83,6 +83,9 @@ class CampaignShow extends Component {
   render() {
     return (
       <Layout>
+        <Link route="/">
+          <a><Icon disabled name='arrow left' /> Back</a>
+        </Link>
         <CampaignDetail
           title={this.props.title}
           description={this.props.description}

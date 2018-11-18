@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Layout from '../../../components/Layout';
-import { Button, Table } from 'semantic-ui-react';
+import { Button, Card, Icon, Header, List } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import Campaign from '../../../ethereum/campaign';
 import RequestRow from '../../../components/RequestRow';
@@ -37,51 +37,63 @@ class RequestIndex extends Component {
     return this.props.requests.map((request, index) => {
       return<RequestRow
         key={index}
-        id={index}
+        id={index + 1}
         approversCount={this.props.approversCount}
         request={request}
         address={this.props.address}
-        showRequestsButton={false}
       />;
     });
   }
 
   render() {
-    const { Header, Row, HeaderCell, Body } = Table;
     return (
       <Layout>
+        <Link route={`/campaigns/${this.props.address}/`}>
+          <a><Icon disabled name='arrow left' /> Back</a>
+        </Link>
         <CampaignDetail
           title={this.props.title}
           description={this.props.description}
           percent={this.props.percent}
           manager={this.props.manager}
           address={this.props.address} />
-        <h3>Request list</h3>
+        <Header as="h2">Spending Requests</Header>
+        <List items={[
+          'Managers create spending requests to purhcase necessary products and servives to reach their goal.',
+          'The amount specified in the request is only sent to the listed recipient if the spending request is approved',
+          'Only Sponsors are able to approve spending requests',
+          'Managers CANNOT send money to their own account',
+          'The request can only be finalized once 51% or more of Sponsors approve the request']} />
+        <div style={{marginBottom: 5}}>Found {this.props.requestCount} requests.</div>
         <Link route={`/campaigns/${this.props.address}/requests/new`}>
           <a>
             <Button primary floated="right" style={{marginBottom:10}}>Add Request</Button>
           </a>
         </Link>
-        <Table>
-          <Header>
-            <Row>
-              <HeaderCell>ID</HeaderCell>
-              <HeaderCell>Description</HeaderCell>
-              <HeaderCell>Amount</HeaderCell>
-              <HeaderCell>Recipient</HeaderCell>
-              <HeaderCell>Approval Count</HeaderCell>
-              <HeaderCell>Approve</HeaderCell>
-              <HeaderCell>Finalize</HeaderCell>
-            </Row>
-          </Header>
-          <Body>
-            {this.renderRows()}
-          </Body>
-        </Table>
-        <div>Found {this.props.requestCount} requests.</div>
+        <Card.Group>
+          {this.renderRows()}
+        </Card.Group>
       </Layout>
     );
   }
 }
+
+// <Table basic="very">
+//   <Header>
+//     <Row>
+//       <HeaderCell width="six">ID</HeaderCell>
+//       <HeaderCell width={2}>Description</HeaderCell>
+//       <HeaderCell width={6}>More information</HeaderCell>
+//       <HeaderCell width={1}>Amount</HeaderCell>
+//       <HeaderCell width={2}>Recipient</HeaderCell>
+//       <HeaderCell width={1}>Approval Count</HeaderCell>
+//       <HeaderCell width={1}>Approve</HeaderCell>
+//       <HeaderCell width={1}>Finalize</HeaderCell>
+//     </Row>
+//   </Header>
+//   <Body>
+//     {this.renderRows()}
+//   </Body>
+// </Table>
 
 export default RequestIndex;
