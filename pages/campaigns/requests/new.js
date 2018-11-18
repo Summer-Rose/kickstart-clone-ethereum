@@ -7,8 +7,9 @@ import Layout from '../../../components/Layout';
 
 class RequestNew extends Component {
   state = {
+    briefDescription: '',
+    detailedDescription: '',
     value: '',
-    description: '',
     recipient: '',
     loading: false,
     errorMessage: ''
@@ -22,12 +23,13 @@ class RequestNew extends Component {
   onSubmit = async event => {
     event.preventDefault();
     const campaign = Campaign(this.props.address);
-    const { description, value, recipient } = this.state;
+    const { briefDescription, detailedDescription, value, recipient } = this.state;
     this.setState({ loading: true, errorMessage: '' });
     try {
       const accounts = await web3.eth.getAccounts();
       await campaign.methods.createRequest(
-        description,
+        briefDescription,
+        detailedDescription,
         web3.utils.toWei(value, 'ether'),
         recipient
       ).send({ from: accounts[0] });
@@ -46,10 +48,17 @@ class RequestNew extends Component {
         <h3>Create a Request</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
-            <label>Description</label>
+            <label>What is this request for?</label>
             <Input
-              value={this.state.description}
-              onChange={event => this.setState({ description: event.target.value })}
+              value={this.state.briefDescription}
+              onChange={event => this.setState({ briefDescription: event.target.value })}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Give a little more information about this spending request</label>
+            <Input
+              value={this.state.detailedDescription}
+              onChange={event => this.setState({ detailedDescription: event.target.value })}
             />
           </Form.Field>
           <Form.Field>
