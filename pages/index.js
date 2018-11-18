@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import factory from '../ethereum/factory';
-import { Card, Button } from 'semantic-ui-react';
+import { Card, Button, Icon, Header } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
 import Campaign from '../ethereum/campaign';
@@ -31,6 +31,14 @@ class CampaignIndex extends Component {
         ),
         description: summary[1], //description
         meta: 'Goal: ' + summary[2] + ' Eth', //goal
+        extra: (
+          <Link route={`/campaigns/${address}`}>
+             <a>
+              <Icon name='info circle' />
+              Learn more
+             </a>
+          </Link>
+        ),
         fluid: true
       };
     });
@@ -41,7 +49,10 @@ class CampaignIndex extends Component {
     return (
       <Layout>
         <div>
-          <h3>Open Campaigns</h3>
+          <Header as='h2' icon textAlign='center' style={{marginTop: 50, marginBottom: 20}}>
+            <Icon name='idea' circular/>
+            <Header.Content>Current Projects</Header.Content>
+          </Header>
           <Link route="/campaigns/new">
             <a>
               <Button
