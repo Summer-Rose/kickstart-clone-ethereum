@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import factory from '../ethereum/factory';
-import { Card, Button, Icon, Header } from 'semantic-ui-react';
+import { Card, Button, Icon, Header, Progress, Container } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import { Link } from '../routes';
 import Campaign from '../ethereum/campaign';
@@ -27,10 +27,21 @@ class CampaignIndex extends Component {
         header: (
          <Link route={`/campaigns/${address}`}>
             <a><h3>{summary[0]}</h3></a>
-          </Link>
+         </Link>
         ),
-        description: summary[1], //description
-        meta: 'Goal: ' + summary[2] + ' Eth', //goal
+        description: (
+          <Container>
+            <div>
+            <Progress style={{marginTop: 10}} value={summary[4]} total={summary[2]} progress='percent' color="teal" />
+            <p style={{marginTop: -25}}>{summary[1]}</p>
+            </div>
+          </Container>
+        ),
+        meta: (
+          <Container>
+            <p>Goal: {summary[2]} ETH<Icon name='ethereum'/></p>
+          </Container>
+        ),
         extra: (
           <Link route={`/campaigns/${address}`}>
              <a>
@@ -56,10 +67,12 @@ class CampaignIndex extends Component {
           <Link route="/campaigns/new">
             <a>
               <Button
+                style={{marginLeft: 20}}
                 floated="right"
-                content="Create Campaign"
-                icon="add"
-                primary/>
+                primary>
+                <Icon name='add'/>
+                Start Project
+              </Button>
             </a>
           </Link>
           {this.renderCampaigns()}
