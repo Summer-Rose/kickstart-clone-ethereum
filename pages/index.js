@@ -24,7 +24,8 @@ class CampaignIndex extends Component {
   renderCampaigns() {
     const items = this.props.summaries.map((summary, index) => {
       const address = this.props.campaigns[index];
-      const percent = Math.floor(((summary[4] + summary[9] / web3.utils.toWei(summary[2], 'ether')) * 100));
+      const totalRaised = (parseInt(summary[4])) + (parseInt(summary[9]));
+      const percent = Math.floor((totalRaised / web3.utils.toWei(summary[2], 'ether')) * 100);
       return {
         key: index,
         header: (

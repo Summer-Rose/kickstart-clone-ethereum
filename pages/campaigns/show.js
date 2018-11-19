@@ -9,10 +9,10 @@ import CampaignDetail from '../../components/CampaignDetail';
 
 class CampaignShow extends Component {
   static async getInitialProps(props) {
-    //get campaign address from url
     const campaign = Campaign(props.query.address);
     const summary = await campaign.methods.getSummary().call();
-    const percent = Math.floor(((summary[4] + summary[9] / web3.utils.toWei(summary[2], 'ether')) * 100));
+    const totalRaised = (parseInt(summary[4])) + (parseInt(summary[9]));
+    const percent = Math.floor((totalRaised / web3.utils.toWei(summary[2], 'ether')) * 100);
     return {
       title: summary[0],
       description: summary[1],
@@ -46,37 +46,44 @@ class CampaignShow extends Component {
 
     const items = [
       {
-        header: goal + ' eth',
+        key: 1,
+        header: goal + ' ETH',
         meta: 'Fundraising goal',
         description: 'This is the amount the manager hopes to raise for their project',
         style: { overflowWrap: 'break-word' }
       },
       {
-        header: web3.utils.fromWei(totalSpentFunds + balance, 'ether') + ' eth',
+        key: 2,
+        header: web3.utils.fromWei(totalSpentFunds + balance, 'ether') + ' ETH',
         meta: 'Amount Earned',
         description: 'This is how much money this project has raised so far'
       },
       {
-        header: web3.utils.fromWei(balance, 'ether') + ' eth',
+        key: 3,
+        header: web3.utils.fromWei(balance, 'ether') + ' ETH',
         meta: 'Current Balance',
         description: 'The balance is how much money this campaign has left to spend'
       },
       {
-        header: web3.utils.fromWei(totalSpentFunds, 'ether') + ' eth',
+        key: 4,
+        header: web3.utils.fromWei(totalSpentFunds, 'ether') + ' ETH',
         meta: 'Spent Funds',
         description: 'The balance is how much money this campaign has left to spend'
       },
       {
+        key: 5,
         header: minimumContribution + ' wei',
         meta: 'Minimum Sponsor Contribution',
         description: 'To gain \'Sponsor\' status you must contribute at least this much',
       },
       {
+        key: 6,
         header: approversCount,
         meta: 'Number of Sponsors',
         description: 'Number of contributers with \'Sponsor\' status.'
       },
       {
+        key: 7,
         header: requestsCount,
         meta: 'Number of Spending Requests',
         extra: (
