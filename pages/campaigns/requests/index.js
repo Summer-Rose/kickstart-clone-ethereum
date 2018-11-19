@@ -78,22 +78,4 @@ class RequestIndex extends Component {
   }
 }
 
-// <Table basic="very">
-//   <Header>
-//     <Row>
-//       <HeaderCell width="six">ID</HeaderCell>
-//       <HeaderCell width={2}>Description</HeaderCell>
-//       <HeaderCell width={6}>More information</HeaderCell>
-//       <HeaderCell width={1}>Amount</HeaderCell>
-//       <HeaderCell width={2}>Recipient</HeaderCell>
-//       <HeaderCell width={1}>Approval Count</HeaderCell>
-//       <HeaderCell width={1}>Approve</HeaderCell>
-//       <HeaderCell width={1}>Finalize</HeaderCell>
-//     </Row>
-//   </Header>
-//   <Body>
-//     {this.renderRows()}
-//   </Body>
-// </Table>
-
 export default RequestIndex;

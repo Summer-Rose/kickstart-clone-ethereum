@@ -12,7 +12,7 @@ class CampaignShow extends Component {
     //get campaign address from url
     const campaign = Campaign(props.query.address);
     const summary = await campaign.methods.getSummary().call();
-    const percent = Math.floor(((summary[4] / web3.utils.toWei(summary[2], 'ether')) * 100));
+    const percent = Math.floor(((summary[4] + summary[9] / web3.utils.toWei(summary[2], 'ether')) * 100));
     return {
       title: summary[0],
       description: summary[1],
@@ -22,7 +22,8 @@ class CampaignShow extends Component {
       requestsCount: summary[5],
       approversCount:summary[6],
       manager: summary[7],
-      totalRequestsAmount: [8],
+      totalRequestsAmount: summary[8],
+      totalSpentFunds: summary[9],
       address: props.query.address,
       percent: percent
     };
@@ -39,6 +40,7 @@ class CampaignShow extends Component {
       requestsCount,
       approversCount,
       totalRequestsAmount,
+      totalSpentFunds,
       percent
     } = this.props;
 
@@ -50,8 +52,18 @@ class CampaignShow extends Component {
         style: { overflowWrap: 'break-word' }
       },
       {
+        header: web3.utils.fromWei(totalSpentFunds + balance, 'ether') + ' eth',
+        meta: 'Amount Earned',
+        description: 'This is how much money this project has raised so far'
+      },
+      {
         header: web3.utils.fromWei(balance, 'ether') + ' eth',
-        meta: 'Current Amount Funded',
+        meta: 'Current Balance',
+        description: 'The balance is how much money this campaign has left to spend'
+      },
+      {
+        header: web3.utils.fromWei(totalSpentFunds, 'ether') + ' eth',
+        meta: 'Spent Funds',
         description: 'The balance is how much money this campaign has left to spend'
       },
       {
