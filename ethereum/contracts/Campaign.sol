@@ -31,6 +31,7 @@ contract Campaign {
   uint public goal;
   uint public minimumContribution;
   uint public totalRequestsAmount;
+  uint public totalSpentFunds;
   //array search - linear time
   //mapping search - 'constant' time
   //mappings are NOT iterable
@@ -50,6 +51,7 @@ contract Campaign {
     description = enteredDescription;
     goal = enteredGoal;
     totalRequestsAmount = 0;
+    totalSpentFunds = 0;
   }
 
   function contribute() public payable {
@@ -99,11 +101,12 @@ contract Campaign {
     require(request.approvalCount > (approversCount / 2), "Not enough people have approved this request yet.");
     request.recipient.transfer(request.value);
     request.complete = true;
+    totalSpentFunds += request.value;
     totalRequestsAmount -= request.value;
   }
 
   function getSummary() public view returns (
-    string, string, uint, uint, uint, uint, uint, address, uint
+    string, string, uint, uint, uint, uint, uint, address, uint, uint
   ) {
     return  (
       title,
@@ -114,7 +117,8 @@ contract Campaign {
       requests.length,
       approversCount,
       manager,
-      totalRequestsAmount
+      totalRequestsAmount,
+      totalSpentFunds
     );
   }
 
