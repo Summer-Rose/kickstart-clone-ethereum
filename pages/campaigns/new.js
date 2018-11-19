@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Layout from '../../components/Layout';
-import { Form, Button, Input, Message } from 'semantic-ui-react';
+import { Form, Button, Input, Message, Icon } from 'semantic-ui-react';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
-import { Router } from '../../routes';
+import { Router, Link } from '../../routes';
 
 class CampaignNew extends Component {
   state = {
@@ -36,6 +36,9 @@ class CampaignNew extends Component {
   render() {
     return(
       <Layout>
+        <Link route={`/`}>
+          <a><Icon disabled name='arrow left' />Back</a>
+        </Link>
         <h3>Create a campaign</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
@@ -46,36 +49,35 @@ class CampaignNew extends Component {
               onChange={event =>
                 this.setState({title: event.target.value })} />
           </Form.Field>
-          <Form.Field>
-            <label>Describe your project</label>
-            <Input
-              value={this.state.description}
-              placeholder='Project description'
-              onChange={event =>
-                this.setState({description: event.target.value })} />
-          </Form.Field>
-          <Form.Field>
-            <label>How much Ether are you hoping to raise for your project?</label>
-            <Input
+          <Form.TextArea
+            onChange={event => this.setState({description: event.target.value })}
+            value={this.state.description}
+            placeholder="Describe your project"
+            label="Give us some more information about this project" />
+          <Form.Group>
+            <Form.Input
+              fluid
+              width={8}
+              type="number"
+              action={{labelPosition: 'right', icon: 'ethereum', content: 'ETH'}}
               value={this.state.goal}
-              placeholder='Goal'
               onChange={event =>
                 this.setState({goal: event.target.value })}
-              label="Ether"
-              labelPosition="right"
-              type="number"/>
-          </Form.Field>
-          <Form.Field>
-            <label>What's the least amount of money someone can contribute to become one of your Approvers?</label>
-            <Input
+              placeholder='Goal'
+              label="How much Ether are you hoping to raise for your project?" />
+          </Form.Group>
+          <Form.Group>
+            <Form.Input
+              fluid
+              width={8}
+              type="number"
+              action={{labelPosition: 'right', icon: 'ethereum', content: 'wei'}}
               value={this.state.minimumContribution}
-              placeholder='Minimum contribution to gain approver status'
               onChange={event =>
                 this.setState({minimumContribution: event.target.value })}
-              label="Wei"
-              labelPosition="right"
-              type="number"/>
-          </Form.Field>
+              placeholder='Minimum contribution'
+              label="What minimum contribution are you asking from contributers to gain 'Sponsor' status?"/>
+          </Form.Group>
           <Message
             error
             header="Oops!"

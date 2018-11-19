@@ -37,7 +37,7 @@ class RequestIndex extends Component {
     return this.props.requests.map((request, index) => {
       return<RequestRow
         key={index}
-        id={index + 1}
+        id={index}
         approversCount={this.props.approversCount}
         request={request}
         address={this.props.address}
@@ -64,7 +64,7 @@ class RequestIndex extends Component {
           'Only Sponsors are able to approve spending requests',
           'Managers CANNOT send money to their own account',
           'The request can only be finalized once 51% or more of Sponsors approve the request']} />
-        <div style={{marginBottom: 5}}>Found {this.props.requestCount} requests.</div>
+        <div style={{marginBottom: 5, marginTop: 25}}>Found {this.props.requestCount} requests.</div>
         <Link route={`/campaigns/${this.props.address}/requests/new`}>
           <a>
             <Button primary floated="right" style={{marginBottom:10}}>Add Request</Button>

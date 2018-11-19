@@ -26,6 +26,7 @@ class CampaignIndex extends Component {
       const address = this.props.campaigns[index];
       const percent = Math.floor(((summary[4] / web3.utils.toWei(summary[2], 'ether')) * 100));
       return {
+        key: index,
         header: (
          <Link route={`/campaigns/${address}`}>
             <a><h3>{summary[0]}</h3></a>

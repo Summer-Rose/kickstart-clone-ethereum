@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { Button, Card, Header, Grid, Divider, Statistic } from 'semantic-ui-react';
+import { Button, Card, Header, Grid, Divider, Statistic, Message } from 'semantic-ui-react';
 import web3 from '../ethereum/web3';
 import Campaign from '../ethereum/campaign';
 
 class RequestRow extends Component {
   static async getInitialProps(props) {
+    console.log('HII');
     const accounts = await web3.eth.getAccounts();
     const campaign = Campaign(this.props.address);
     const manager = await campaign.methods.manager().call();
+    console.log("ACCOUNTS ", accounts);
     return { account: accounts[0], manager: manager }
   }
+
   onApprove = async () => {
     const campaign = Campaign(this.props.address);
     const accounts = await web3.eth.getAccounts();
@@ -26,12 +29,28 @@ class RequestRow extends Component {
     });
   };
 
+  renderButtons(complete) {
+    if (complete) {
+      return (
+        <Message>Request complete</Message>
+    );
+    } else {
+      return (
+        <Button.Group size='large'>
+          <Button color="green" basic onClick={this.onApprove}>Approve</Button>
+          <Button.Or />
+          <Button color="red" basic onClick={this.onFinalize}>Finalize</Button>
+        </Button.Group>
+      );
+    }
+  }
+
   render() {
     const { id, request, approversCount, manager } = this.props;
     const readyToFinalize = request.approvalCount > approversCount / 2;
 
     return (
-      <Card fluid>
+      <Card fluid raised>
         <Card.Content>
           <Statistic size='mini' floated="right">
             <Statistic.Value>{web3.utils.fromWei(request.value, 'ether')} ETH</Statistic.Value>
@@ -52,11 +71,7 @@ class RequestRow extends Component {
                 </Statistic>
               </Grid.Column>
               <Grid.Column floated="right">
-                <Button.Group size='large'>
-                  <Button color="green" basic onClick={this.onApprove}>Approve</Button>
-                  <Button.Or />
-                  <Button color="red" basic onClick={this.onFinalize}>Finalize</Button>
-                </Button.Group>
+                {this.renderButtons(request.complete)}
               </Grid.Column>
             </Grid.Row>
           </Grid>
